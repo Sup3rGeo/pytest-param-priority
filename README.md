@@ -182,8 +182,8 @@ def test_two(intermediate_step):
 ```
 
 Now we can see that the test order is based on all *number*
-parameters, then all *letter* parameters and finally all
-*color* parameters:
+parameters, then all *color* parameters and finally all
+*letter* parameters:
 
 ```
 <Module test_one.py>
