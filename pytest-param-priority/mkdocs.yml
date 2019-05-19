@@ -1,0 +1,10 @@
+site_name: pytest-param-priority
+site_description: A test ordering plugin that allows defining parameter priorities.
+site_author: Victor Maryama
+
+theme: readthedocs
+
+repo_url: https://github.com/Sup3rGeo/pytest-param-priority
+
+pages:
+- Home: index.md
