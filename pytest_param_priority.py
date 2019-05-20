@@ -1,17 +1,27 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict, defaultdict, deque
 import itertools
+
+
+# This first part of the code is basically getting the required
+# information to properly identify the argument later on to check
+# its priority.
+
+# We seem to redo a lot of things pytest is already doing. It would
+# be easier to have an argument to pytest's fixture decorator and
+# pass the priority directly inside the created FixtureDef
+
+# But if we are not changing pytest code then it seems this is how
+# we should do it
+
+
 import inspect
 from _pytest.fixtures import getfixturemarker, FixtureFunctionMarker
-
 # TODO: Check if we need get_real_method instead (holder?)
 from _pytest.compat import get_real_func
+from py.path import local
 
 
-scopes = "session package module class function".split()
-scopenum_function = scopes.index("function")
-
-# TODO: Check if we need this as well
 def get_class_that_defined_method(meth):
     if inspect.ismethod(meth):
         for cls in inspect.getmro(meth.__self__.__class__):
@@ -26,15 +36,14 @@ def get_class_that_defined_method(meth):
     return getattr(meth, '__objclass__', None)  # handle special descriptor objects
 
 
-argname_prioinfo = {0: {},
-                    1: {},
-                    2: {},
-                    3: {}}
-
-
 def parameter_priority(priority):
-    from py.path import local
+
     def get_param_spec_decorator(func):
+        # Just inspect the function to create the key to
+        # uniquely identify the argument and its priority
+
+        # Returns the fixture function unchanged
+
         marker = getfixturemarker(func)
         if not isinstance(marker, FixtureFunctionMarker):
             return func
@@ -62,6 +71,26 @@ def parameter_priority(priority):
     return get_param_spec_decorator
 
 
+# This is where we store the priorities for each argument
+# from the test definition with our parameter_priority
+# decorator. From now onwards this is all we need.
+# For each scopenum, save the argnames and its priorities
+argname_prioinfo = {0: {},
+                    1: {},
+                    2: {},
+                    3: {}}
+
+
+# Below this point is the same pytest sorting algorithm but
+# upgraded to consider not only scopes as a priority, but each
+# possible (scope, priority) pair - effectively creating "virtual scopes"
+# for sorting.
+
+
+scopes = "session package module class function".split()
+scopenum_function = scopes.index("function")
+
+
 def pytest_collection_modifyitems(items):
     # separate parametrized setups
     items[:] = reorder_items(items)
@@ -70,13 +99,6 @@ def pytest_collection_modifyitems(items):
 def get_parametrized_fixture_keys(item, scopenum, priority):
     """ return list of keys for all parametrized arguments which match
     the specified scope. """
-    def get_priority(argname):
-        p = {
-            "number": 0,
-            "letter": 1,
-        }
-        return p.get(argname, lowest_priority)
-
     assert scopenum < scopenum_function  # function
     try:
         cs = item.callspec
@@ -115,6 +137,7 @@ def get_parametrized_fixture_keys(item, scopenum, priority):
 # setups and teardowns
 
 # Priorities are tuple (scopenum, priority)
+# There could be more than 4 priorities (any number actually)...
 lowest_priority = 3
 
 priorities = list(itertools.product(
