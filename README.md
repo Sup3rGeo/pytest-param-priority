@@ -76,7 +76,7 @@ def test_two(intermediate_step):
 You can see that pytest minimizes the number of fixture
 parameter changes globally among all parameters at the
 same scope. For instance, look how `red` appears discontinuously in
-the beginning, then in two groups at the end:
+the beginning, middle, then in two groups at the end:
 
 ```
 <Module test_one.py>
