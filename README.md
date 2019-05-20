@@ -35,7 +35,7 @@ You can install "pytest-param-priority" via
 [pip](https://pypi.org/project/pip/) from
 [PyPI](https://pypi.org/project):
 
-    $ pip install pytest-param-priority
+    $ pip install git+https://github.com/Sup3rGeo/pytest-param-priority
 
 ## Usage
 

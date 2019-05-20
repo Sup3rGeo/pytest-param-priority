@@ -21,7 +21,7 @@ setup(
     license='MIT',
     url='https://github.com/Sup3rGeo/pytest-param-priority',
     description='A test ordering plugin that allows defining parameter priorities.',
-    long_description=read('README.rst'),
+    long_description=read('README.md'),
     py_modules=['pytest_param_priority'],
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
     install_requires=['pytest>=3.5.0'],
