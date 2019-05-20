@@ -33,7 +33,7 @@ high chance of changing and should not be considered stable.
 
 You can install "pytest-param-priority" via
 [pip](https://pypi.org/project/pip/) from
-[PyPI](https://pypi.org/project):
+this github repository:
 
     $ pip install git+https://github.com/Sup3rGeo/pytest-param-priority
 
